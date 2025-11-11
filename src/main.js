@@ -1,12 +1,13 @@
-// src/main.js
+// main.js
 
-const logger = require('./utils.logger');
-const helpers = require('./utils.helpers');
-const spawnManager = require('./managers.spawn');
+const logger = require('utils.logger');
+const helpers = require('utils.helpers');
+const spawnManager = require('managers.spawn');
+const hudManager = require('managers.hud');
 
 // Roles
-const roleHarvester = require('./roles.harvester');
-const roleUpgrader = require('./roles.upgraders');
+const roleHarvester = require('roles.harvester');
+const roleUpgrader = require('roles.upgrader');
 
 // Global: exposer le logger pour la console
 global.logger = logger;
@@ -26,6 +27,9 @@ module.exports.loop = function () {
 
     // Gestion du spawn
     spawnManager.run(room);
+
+    // Afficher le HUD
+    hudManager.run(room);
   }
 
   // Exécuter les rôles pour chaque creep
