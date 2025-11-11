@@ -204,8 +204,8 @@ module.exports = {
 
   // Utilitaire : Visualiser le heat map (debug)
   visualizeHeatMap(room) {
-    const roadMemory = Memory.rooms[room.name]?.roads;
-    if (!roadMemory?.heatMap) return;
+    const roadMemory = Memory.rooms[room.name] && Memory.rooms[room.name].roads;
+    if (!roadMemory || !roadMemory.heatMap) return;
 
     const visual = room.visual;
     const maxHeat = Math.max(...Object.values(roadMemory.heatMap));
