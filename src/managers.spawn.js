@@ -1,9 +1,9 @@
-// src/managers/spawn.manager.js
+// managers.spawn.js
 
-const logger = require('./utils.logger');
-const helpers = require('./utils.helpers');
-const CONSTANTS = require('./config.constants');
-
+const logger = require('utils.logger');
+const helpers = require('utils.helpers');
+const CONSTANTS = require('config.constants');
+const populationManager = require('managers.population');
 
 module.exports = {
   run(room) {
@@ -15,11 +15,12 @@ module.exports = {
       return;
     }
 
-    // Compter les creeps par rôle
-    const creepsByRole = this.countCreepsByRole(room);
+    // Utiliser la population dynamique
+    const targetPopulation = populationManager.getOptimalPopulation(room);
+    const currentPopulation = populationManager.getCurrentPopulation(room);
     
     // Vérifier si on a besoin de spawner
-    const roleToSpawn = this.getRoleToSpawn(creepsByRole);
+    const roleToSpawn = this.getRoleToSpawn(currentPopulation, targetPopulation, room);
     
     if (roleToSpawn) {
       this.spawnCreep(spawn, roleToSpawn, room);
@@ -39,37 +40,22 @@ module.exports = {
     logger.endCPU('SpawnManager');
   },
 
-  countCreepsByRole(room) {
-    const counts = {};
-    
-    // Initialiser tous les rôles à 0
-    for (const role in CONSTANTS.ROLES) {
-      counts[CONSTANTS.ROLES[role]] = 0;
-    }
-
-    // Compter les creeps de cette room
-    for (const name in Game.creeps) {
-      const creep = Game.creeps[name];
-      if (creep.room.name === room.name && creep.memory.role) {
-        counts[creep.memory.role]++;
-      }
-    }
-
-    logger.debug('SpawnManager', 'Creep counts', counts);
-    return counts;
-  },
-
-  getRoleToSpawn(creepsByRole) {
+  getRoleToSpawn(currentPopulation, targetPopulation, room) {
     // Créer une liste des rôles en déficit
     const deficits = [];
 
-    for (const [role, count] of Object.entries(creepsByRole)) {
-      const target = CONSTANTS.TARGET_POPULATION[role] || 0;
-      if (count < target) {
+    for (const role in targetPopulation) {
+      const current = currentPopulation[role] || 0;
+      const target = targetPopulation[role] || 0;
+      
+      if (current < target) {
+        // Obtenir les priorités dynamiques
+        const priorities = populationManager.getSpawnPriorities(room);
+        
         deficits.push({
           role,
-          deficit: target - count,
-          priority: CONSTANTS.SPAWN_PRIORITY[role] || 999
+          deficit: target - current,
+          priority: priorities[role] || CONSTANTS.SPAWN_PRIORITY[role] || 999
         });
       }
     }
@@ -84,7 +70,7 @@ module.exports = {
       return b.deficit - a.deficit;
     });
 
-    logger.info('SpawnManager', `Need to spawn: ${deficits[0].role}`);
+    logger.info('SpawnManager', `Need to spawn: ${deficits[0].role} (priority: ${deficits[0].priority})`);
     return deficits[0].role;
   },
 
@@ -97,21 +83,7 @@ module.exports = {
       return ERR_INVALID_ARGS;
     }
 
-    // Adapter les body parts selon le RCL et le rôle
-    let body;
-    if (role === 'harvester' && room.controller.level >= 3) {
-      // RCL 3+ : Harvesters statiques (que du WORK)
-      const staticConfig = {
-        300: [WORK, WORK, MOVE],
-        550: [WORK, WORK, WORK, WORK, MOVE],
-        800: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE]
-      };
-      body = helpers.getOptimalBody(role, availableEnergy, staticConfig);
-    } else {
-      // RCL 1-2 ou autres rôles : config normale
-      body = helpers.getOptimalBody(role, availableEnergy, bodyConfig);
-    }
-
+    const body = helpers.getOptimalBody(role, availableEnergy, bodyConfig);
     const cost = helpers.getBodyCost(body);
 
     if (availableEnergy < cost) {
@@ -129,7 +101,7 @@ module.exports = {
     const result = spawn.spawnCreep(body, name, { memory });
 
     if (result === OK) {
-      logger.info('SpawnManager', `✅ Spawning ${name} (cost: ${cost}, RCL: ${room.controller.level})`);
+      logger.info('SpawnManager', `✅ Spawning ${name} (cost: ${cost})`);
     } else {
       logger.error('SpawnManager', `❌ Failed to spawn ${role}: ${result}`);
     }
