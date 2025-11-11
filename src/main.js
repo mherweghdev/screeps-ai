@@ -1,12 +1,12 @@
 // src/main.js
 
-const logger = require('./utils/logger');
+const logger = require('./utils.logger');
 const helpers = require('./utils/helpers');
-const spawnManager = require('./managers/spawn.manager');
+const spawnManager = require('./managers.spawn');
 
 // Roles
-const roleHarvester = require('./roles/harvester');
-const roleUpgrader = require('./roles/upgrader');
+const roleHarvester = require('./roles.harvester');
+const roleUpgrader = require('./roles.upgraders');
 
 // Global: exposer le logger pour la console
 global.logger = logger;

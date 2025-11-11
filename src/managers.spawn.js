@@ -1,6 +1,6 @@
 // src/managers/spawn.manager.js
 
-const logger = require('../utils/logger');
+const logger = require('./utils.logger');
 const helpers = require('../utils/helpers');
 const CONSTANTS = require('../config/constants');
 
