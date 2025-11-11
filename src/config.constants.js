@@ -25,7 +25,7 @@ module.exports = {
     hauler: 3,    // Transport dédié
     upgrader: 2,
     builder: 1,
-    repairer: 0 // On verra plus tard
+    repairer: 1   // Maintenance des structures
   },
 
   // Body parts par rôle et niveau d'énergie

@@ -5,12 +5,14 @@ const helpers = require('utils.helpers');
 const spawnManager = require('managers.spawn');
 const hudManager = require('managers.hud');
 const roomManager = require('managers.room');
+const roadsManager = require('managers.roads');
 
 // Roles
 const roleHarvester = require('roles.harvester');
 const roleHauler = require('roles.hauler');
 const roleUpgrader = require('roles.upgrader');
 const roleBuilder = require('roles.builder');
+const roleRepairer = require('roles.repairer');
 
 // Global: exposer le logger pour la console
 global.logger = logger;
@@ -30,6 +32,9 @@ module.exports.loop = function () {
 
     // Gestion de la room (containers, etc.)
     roomManager.run(room);
+
+    // Gestion des routes automatiques
+    roadsManager.run(room);
 
     // Gestion du spawn
     spawnManager.run(room);
@@ -56,6 +61,9 @@ module.exports.loop = function () {
           break;
         case 'builder':
           roleBuilder.run(creep);
+          break;
+        case 'repairer':
+          roleRepairer.run(creep);
           break;
         default:
           logger.warn('Main', `Unknown role: ${role} for creep ${name}`);
