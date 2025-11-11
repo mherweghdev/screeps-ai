@@ -162,7 +162,8 @@ module.exports = {
 
     for (const site of sites) {
       // Supprimer les sites très vieux (> 50000 ticks = ~1.4 jour)
-      if (Game.time - (site.memory?.createdAt || 0) > 50000) {
+      const createdAt = (site.memory && site.memory.createdAt) ? site.memory.createdAt : 0;
+      if (Game.time - createdAt > 50000) {
         site.remove();
         removed++;
       }
@@ -172,4 +173,4 @@ module.exports = {
       logger.info('RoomManager', `Cleaned up ${removed} old construction sites`);
     }
   }
-};  
+};
