@@ -166,16 +166,20 @@ module.exports = {
     let removed = 0;
 
     for (const site of sites) {
-      // Supprimer les sites très vieux (> 50000 ticks = ~1.4 jour)
-      const createdAt = (site.memory && site.memory.createdAt) ? site.memory.createdAt : 0;
-      if (Game.time - createdAt > 50000) {
+      // Supprimer seulement les sites TRÈS vieux (> 100000 ticks = ~2.8 jours)
+      // Note: Les construction sites ont un timeout automatique à 100000 ticks
+      const createdAt = (site.memory && site.memory.createdAt) ? site.memory.createdAt : Game.time;
+      const age = Game.time - createdAt;
+      
+      // Ne supprimer que si très vieux ET progress = 0
+      if (age > 100000 && site.progress === 0) {
         site.remove();
         removed++;
       }
     }
 
     if (removed > 0) {
-      logger.info('RoomManager', `Cleaned up ${removed} old construction sites`);
+      logger.info('RoomManager', `Cleaned up ${removed} abandoned construction sites`);
     }
   }
 };

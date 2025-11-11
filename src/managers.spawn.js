@@ -97,7 +97,21 @@ module.exports = {
       return ERR_INVALID_ARGS;
     }
 
-    const body = helpers.getOptimalBody(role, availableEnergy, bodyConfig);
+    // Adapter les body parts selon le RCL et le rôle
+    let body;
+    if (role === 'harvester' && room.controller.level >= 3) {
+      // RCL 3+ : Harvesters statiques (que du WORK)
+      const staticConfig = {
+        300: [WORK, WORK, MOVE],
+        550: [WORK, WORK, WORK, WORK, MOVE],
+        800: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE]
+      };
+      body = helpers.getOptimalBody(role, availableEnergy, staticConfig);
+    } else {
+      // RCL 1-2 ou autres rôles : config normale
+      body = helpers.getOptimalBody(role, availableEnergy, bodyConfig);
+    }
+
     const cost = helpers.getBodyCost(body);
 
     if (availableEnergy < cost) {
@@ -115,7 +129,7 @@ module.exports = {
     const result = spawn.spawnCreep(body, name, { memory });
 
     if (result === OK) {
-      logger.info('SpawnManager', `✅ Spawning ${name} (cost: ${cost})`);
+      logger.info('SpawnManager', `✅ Spawning ${name} (cost: ${cost}, RCL: ${room.controller.level})`);
     } else {
       logger.error('SpawnManager', `❌ Failed to spawn ${role}: ${result}`);
     }

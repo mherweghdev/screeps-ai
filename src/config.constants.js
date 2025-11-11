@@ -11,6 +11,8 @@ module.exports = {
   },
 
   // Priorités de spawn (plus le nombre est bas, plus c'est prioritaire)
+  // Note: Ces priorités de base peuvent être overridées dynamiquement
+  // par managers.population selon les besoins critiques
   SPAWN_PRIORITY: {
     harvester: 1,
     hauler: 2,
@@ -19,21 +21,26 @@ module.exports = {
     repairer: 5
   },
 
-  // Population cible par rôle (ajustable selon RCL)
+  // Population cible par rôle - DEPRECATED
+  // Utiliser managers.population.getOptimalPopulation() à la place
+  // Ces valeurs sont conservées comme fallback uniquement
   TARGET_POPULATION: {
-    harvester: 2, // 1 par source (statiques)
-    hauler: 3,    // Transport dédié
+    harvester: 2,
+    hauler: 3,
     upgrader: 2,
     builder: 1,
-    repairer: 1   // Maintenance des structures
+    repairer: 1
   },
 
   // Body parts par rôle et niveau d'énergie
   BODY_PARTS: {
     harvester: {
-      300: [WORK, WORK, MOVE],
-      550: [WORK, WORK, WORK, WORK, MOVE],
-      800: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE]
+      // RCL 1-2 : Harvesters multi-rôles (récoltent ET transportent)
+      300: [WORK, CARRY, MOVE, MOVE],
+      550: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
+      800: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
+      // RCL 3+ : Harvesters statiques (que du WORK)
+      1200: [WORK, WORK, WORK, WORK, WORK, WORK, MOVE, MOVE]
     },
     hauler: {
       300: [CARRY, CARRY, MOVE, MOVE],
@@ -46,6 +53,11 @@ module.exports = {
       800: [WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE]
     },
     builder: {
+      300: [WORK, CARRY, MOVE, MOVE],
+      550: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
+      800: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
+    },
+    repairer: {
       300: [WORK, CARRY, MOVE, MOVE],
       550: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
       800: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
