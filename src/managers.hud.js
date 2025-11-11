@@ -3,6 +3,7 @@
 const logger = require('utils.logger');
 const helpers = require('utils.helpers');
 const CONSTANTS = require('config.constants');
+const populationManager = require('managers.population');
 
 module.exports = {
   run(room) {
@@ -83,15 +84,20 @@ module.exports = {
       stats.energy, stats.energyCapacity, energyColor);
     currentY += lineHeight;
 
-    // === CREEPS ===
+    // === CREEPS (Population Dynamique) ===
     visual.text(`👷 Creeps: ${stats.totalCreeps}`, startX, currentY, textStyle);
     currentY += lineHeight * 0.8;
 
+    // Utiliser la population dynamique
+    const targetPopulation = populationManager.getOptimalPopulation(room);
+
     // Détail par rôle
-    for (const [role, count] of Object.entries(stats.creepsByRole)) {
-      if (count > 0) {
+    for (const role in targetPopulation) {
+      const count = stats.creepsByRole[role] || 0;
+      const target = targetPopulation[role] || 0;
+      
+      if (target > 0 || count > 0) {
         const icon = this.getRoleIcon(role);
-        const target = CONSTANTS.TARGET_POPULATION[role] || 0;
         const color = count >= target ? '#00ff00' : '#ffaa00';
         
         visual.text(`${icon} ${role}:`, startX + 0.5, currentY, 

@@ -6,6 +6,7 @@ const spawnManager = require('managers.spawn');
 const hudManager = require('managers.hud');
 const roomManager = require('managers.room');
 const roadsManager = require('managers.roads');
+const populationManager = require('managers.population');
 
 // Roles
 const roleHarvester = require('roles.harvester');
@@ -14,8 +15,9 @@ const roleUpgrader = require('roles.upgrader');
 const roleBuilder = require('roles.builder');
 const roleRepairer = require('roles.repairer');
 
-// Global: exposer le logger pour la console
+// Global: exposer le logger et managers pour la console
 global.logger = logger;
+global.population = populationManager;
 
 module.exports.loop = function () {
   // Nettoyer la mémoire périodiquement
