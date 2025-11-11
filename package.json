@@ -1,0 +1,18 @@
+{
+    "name": "screeps-ai",
+    "version": "1.0.0",
+    "description": "Mon IA Screeps",
+    "main": "src/main.js",
+    "scripts": {
+        "push": "screeps-deploy",
+        "watch": "screeps-deploy --watch",
+        "push-sim": "screeps-deploy --sim"
+    },
+    "devDependencies": {
+        "screeps-deploy": "^1.1.0"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
+}

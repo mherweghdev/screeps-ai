@@ -1,0 +1,6 @@
+{
+  "email": "your-email@example.com",
+  "password": "your-password",
+  "branch": "default",
+  "ptr": false
+}
