@@ -1,7 +1,7 @@
 // src/main.js
 
 const logger = require('./utils.logger');
-const helpers = require('./utils/helpers');
+const helpers = require('./utils.helpers');
 const spawnManager = require('./managers.spawn');
 
 // Roles

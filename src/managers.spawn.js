@@ -1,8 +1,8 @@
 // src/managers/spawn.manager.js
 
 const logger = require('./utils.logger');
-const helpers = require('../utils/helpers');
-const CONSTANTS = require('../config/constants');
+const helpers = require('./utils.helpers');
+const CONSTANTS = require('./config.constants');
 
 module.exports = {
   run(room) {
