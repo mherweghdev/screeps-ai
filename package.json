@@ -4,12 +4,9 @@
     "description": "Mon IA Screeps",
     "main": "src/main.js",
     "scripts": {
-        "push": "screeps-deploy",
-        "watch": "screeps-deploy --watch",
-        "push-sim": "screeps-deploy --sim"
-    },
-    "devDependencies": {
-        "screeps-deploy": "^1.1.0"
+        "push": "screeps-deploy --config config.js",
+        "watch": "screeps-deploy --config config.js --watch",
+        "push-sim": "screeps-deploy --config config.js --sim"
     },
     "keywords": [],
     "author": "",

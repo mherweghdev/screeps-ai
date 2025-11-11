@@ -1,6 +1,7 @@
 # Credentials
 .screeps.json
 screeps.json
+config.js
 
 # Node modules
 node_modules/
