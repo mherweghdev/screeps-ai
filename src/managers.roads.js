@@ -7,6 +7,16 @@ module.exports = {
     if (!room.controller || !room.controller.my) return;
     if (room.controller.level < 3) return; // Attendre RCL 3 pour les roads
 
+    // Initialiser Memory.rooms si nécessaire
+    if (!Memory.rooms) {
+      Memory.rooms = {};
+    }
+
+    // Initialiser la mémoire de la room si nécessaire
+    if (!Memory.rooms[room.name]) {
+      Memory.rooms[room.name] = {};
+    }
+
     // Initialiser la mémoire des roads
     if (!Memory.rooms[room.name].roads) {
       Memory.rooms[room.name].roads = {

@@ -8,6 +8,11 @@ module.exports = {
 
     logger.startCPU('RoomManager');
 
+    // Initialiser Memory.rooms si nécessaire
+    if (!Memory.rooms) {
+      Memory.rooms = {};
+    }
+
     // Initialiser la mémoire de la room si nécessaire
     if (!Memory.rooms[room.name]) {
       Memory.rooms[room.name] = {
