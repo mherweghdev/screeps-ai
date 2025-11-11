@@ -4,9 +4,11 @@ const logger = require('utils.logger');
 const helpers = require('utils.helpers');
 const spawnManager = require('managers.spawn');
 const hudManager = require('managers.hud');
+const roomManager = require('managers.room');
 
 // Roles
 const roleHarvester = require('roles.harvester');
+const roleHauler = require('roles.hauler');
 const roleUpgrader = require('roles.upgrader');
 
 // Global: exposer le logger pour la console
@@ -25,6 +27,9 @@ module.exports.loop = function () {
     // Skip si on ne possède pas cette room
     if (!room.controller || !room.controller.my) continue;
 
+    // Gestion de la room (containers, etc.)
+    roomManager.run(room);
+
     // Gestion du spawn
     spawnManager.run(room);
 
@@ -41,6 +46,9 @@ module.exports.loop = function () {
       switch (role) {
         case 'harvester':
           roleHarvester.run(creep);
+          break;
+        case 'hauler':
+          roleHauler.run(creep);
           break;
         case 'upgrader':
           roleUpgrader.run(creep);
