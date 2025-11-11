@@ -10,6 +10,7 @@ const roomManager = require('managers.room');
 const roleHarvester = require('roles.harvester');
 const roleHauler = require('roles.hauler');
 const roleUpgrader = require('roles.upgrader');
+const roleBuilder = require('roles.builder');
 
 // Global: exposer le logger pour la console
 global.logger = logger;
@@ -52,6 +53,9 @@ module.exports.loop = function () {
           break;
         case 'upgrader':
           roleUpgrader.run(creep);
+          break;
+        case 'builder':
+          roleBuilder.run(creep);
           break;
         default:
           logger.warn('Main', `Unknown role: ${role} for creep ${name}`);
